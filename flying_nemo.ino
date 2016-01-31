@@ -1,14 +1,34 @@
 #include <IRremote.h>
 #include <avr/sleep.h>
 #include "Decoder.h"
-#include "Edystone.h"
 #include "NemoControler.h"
+#include "BLEControlerWrapper.h"
 
 Decoder decoder(4);
-
 decode_results result;
-EdystoneBeacon beacon(-55);
 NemoControler controler;
+
+void callback(char code){
+
+
+	switch(code){
+	case 'u':
+		Serial.println("Controler up");
+		controler.up();
+		break;
+	case 'd':
+		Serial.println("Controler down");
+		controler.down();
+		break;
+	default:
+		Serial.println("Controler idle");
+		controler.idle();
+	}
+
+}
+
+BLEControlerWrapper bleWrapper(callback,500);
+
 
 void disableACDC() {
 	ADCSRA = ADCSRA & B01111111;
@@ -22,30 +42,15 @@ void sleep_until_interrupted() {
 
 void setup() {
 	Serial.begin(9600);
-	decoder.init();
-	beacon.broadcastURL("http://neofonie.de");
-	beacon.setBroadcastInterval(1000);
-	beacon.init();
+	bleWrapper.setup();
+
 	Serial.println("startup compleded!");
 
 }
 
-void backAndForth() {
-	static int counter = 0;
-	counter++;
-	if (counter < 10) {
-		controler.up();
-	} else if (counter < 20) {
-		controler.down();
-	} else {
-		counter = 0;
-	}
-}
 
 void loop() {
-	decoder.interceptAndDecode();
-	beacon.loop();
-
-	//backAndForth();
+	bleWrapper.poolEvent();
+	controler.sendCurrent();
 }
 

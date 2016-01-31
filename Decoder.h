@@ -4,11 +4,11 @@
  *  Created on: Jan 30, 2016
  *      Author: daber
  */
+#ifndef DECODER_H_
+#define DECODER_H_
 
 #include <Arduino.h>
 #include <IRremote.h>
-#ifndef DECODER_H_
-#define DECODER_H_
 
 class Decoder {
 
