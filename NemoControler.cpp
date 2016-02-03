@@ -9,7 +9,8 @@
 #include <IRremote.h>
 
 NemoControler::NemoControler() :
-		codeLenght(27), carrierFreq(38), state('i') {
+		codeLenght(27), carrierFreq(38), state('i'), pressState(
+				CONTROLER_RELEASED) {
 
 }
 
@@ -18,21 +19,40 @@ NemoControler::~NemoControler() {
 }
 
 void NemoControler::sendCode(unsigned int* table) {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 1; i++) {
 		irsend.sendRaw(table, codeLenght, carrierFreq);
+		delay(50);
 	}
 }
 
 void NemoControler::sendUp() {
-	sendCode(nemo_up_pressed);
-	sendCode(nemo_up_holding);
-	sendCode(nemo_released);
-	sendCode(nemo_idle);
+	switch (pressState) {
+	case CONTROLER_RELEASED:
+		sendCode(nemo_up_pressed);
+		pressState = CONTROLER_PRESSED;
+		break;
+	case CONTROLER_PRESSED:
+		sendCode(nemo_up_holding);
+		break;
+	}
+
 }
 
 void NemoControler::sendDown() {
-	sendCode(nemo_down_pressed);
-	sendCode(nemo_down_holding);
+	switch (pressState) {
+	case CONTROLER_RELEASED:
+		sendCode(nemo_down_pressed);
+		pressState = CONTROLER_PRESSED;
+		break;
+	case CONTROLER_PRESSED:
+		sendCode(nemo_down_holding);
+		break;
+	}
+
+}
+
+void NemoControler::sendReleased() {
+	pressState = CONTROLER_RELEASED;
 	sendCode(nemo_released);
 	sendCode(nemo_idle);
 }
@@ -46,6 +66,9 @@ void NemoControler::sendCurrent() {
 	case 'd':
 		sendDown();
 		break;
+	case 'i':
+		sendReleased();
+		break;
 	default:
 		break;
 	}
@@ -57,9 +80,15 @@ void NemoControler::idle() {
 }
 
 void NemoControler::up() {
+	if (pressState == CONTROLER_PRESSED) {
+		sendReleased();
+	}
 	state = 'u';
 }
 
 void NemoControler::down() {
+	if (pressState == CONTROLER_PRESSED) {
+		sendReleased();
+	}
 	state = 'd';
 }
