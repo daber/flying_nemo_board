@@ -4,11 +4,12 @@
  *  Created on: Jan 31, 2016
  *      Author: daber
  */
-#ifndef BLECONTROLERWRAPPER_H_
-#define BLECONTROLERWRAPPER_H_
+#ifndef BLECONTROLLER_H_
+#define BLECONTROLLER_H_
 
+#include <Arduino.h>
 
-class BLEControlerWrapper {
+class BLEController {
 public:
 
 	typedef  void (*OnPressCallback)(char data);
@@ -18,11 +19,11 @@ private:
 	OnPressCallback callback;
 
 public:
-	BLEControlerWrapper(OnPressCallback listener, uint16_t bcastInterval_ms);
-	virtual ~BLEControlerWrapper();
+	BLEController(OnPressCallback listener, uint16_t bcastInterval_ms);
+	virtual ~BLEController();
 	void setup();
 	void poolEvent();
 
 };
 
-#endif /* BLECONTROLERWRAPPER_H_ */
+#endif /* BLECONTROLLER_H_ */

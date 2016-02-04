@@ -1,8 +1,9 @@
 #include <IRremote.h>
 #include <avr/sleep.h>
+
+#include "BLEController.h"
 #include "Decoder.h"
 #include "NemoControler.h"
-#include "BLEControlerWrapper.h"
 
 Decoder decoder(4);
 decode_results result;
@@ -13,21 +14,33 @@ void callback(char code){
 
 	switch(code){
 	case 'u':
-		Serial.println("Controler up");
+		Serial.println("Controller up");
 		controler.up();
 		break;
 	case 'd':
-		Serial.println("Controler down");
+		Serial.println("Controller down");
 		controler.down();
 		break;
+	case 'l':
+		Serial.println("Controller up");
+		controler.left();
+			break;
+	case 'r':
+		Serial.println("Controller down");
+		controler.right();
+		break;
+	case 'i':
+		Serial.println("Controller idle");
+		controler.idle();
+		break;
 	default:
-		Serial.println("Controler idle");
+		Serial.println("Unknown command Controller idle");
 		controler.idle();
 	}
 
 }
 
-BLEControlerWrapper bleWrapper(callback,500);
+BLEController bleWrapper(callback,500);
 
 
 void disableACDC() {

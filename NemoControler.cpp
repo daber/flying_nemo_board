@@ -8,9 +8,9 @@
 #include "nemo_codes.h"
 #include <IRremote.h>
 
+#define DEBUG_PRINT(s) Serial.println(s)
 NemoControler::NemoControler() :
-		codeLenght(27), carrierFreq(38), state('i'), pressState(
-				CONTROLER_RELEASED),targetState(0) {
+		codeLenght(27), carrierFreq(38), state('i'), targetState('i') {
 
 }
 
@@ -25,112 +25,98 @@ void NemoControler::sendCode(unsigned int* table) {
 	}
 }
 
-void NemoControler::sendLeft() {
-	switch (pressState) {
-	case CONTROLER_RELEASED:
+char NemoControler::onStateTransition() {
+
+	if (state == 'i' && targetState == 'i') {
+		//nothing
+		return 'i';
+	}
+	if (state == 'i' && targetState == 'u') {
+		DEBUG_PRINT("up_pressed");
 		sendCode(nemo_up_pressed);
-		pressState = CONTROLER_PRESSED;
-		break;
-	case CONTROLER_PRESSED:
+		return 'u';
+	}
+	if (state == 'u' && targetState == 'u') {
+		DEBUG_PRINT("up_holding");
 		sendCode(nemo_up_holding);
-		break;
+		return 'u';
 	}
-
-}
-
-void NemoControler::sendRight() {
-	switch (pressState) {
-	case CONTROLER_RELEASED:
+	if (state == 'i' && targetState == 'd') {
+		DEBUG_PRINT("down_pressed");
 		sendCode(nemo_down_pressed);
-		pressState = CONTROLER_PRESSED;
-		break;
-	case CONTROLER_PRESSED:
+		return 'd';
+	}
+	if (state == 'd' && targetState == 'd') {
+		DEBUG_PRINT("down_holding");
 		sendCode(nemo_down_holding);
-		break;
+		return 'd';
 	}
 
-}
-
-
-void NemoControler::sendUp() {
-	switch (pressState) {
-	case CONTROLER_RELEASED:
-		sendCode(nemo_up_pressed);
-		pressState = CONTROLER_PRESSED;
-		break;
-	case CONTROLER_PRESSED:
-		sendCode(nemo_up_holding);
-		break;
+	if (state == 'i' && targetState == 'l') {
+		DEBUG_PRINT("left_pressed");
+		sendCode(nemo_left_pressed);
+		return 'l';
 	}
 
-}
-
-void NemoControler::sendDown() {
-	switch (pressState) {
-	case CONTROLER_RELEASED:
-		sendCode(nemo_down_pressed);
-		pressState = CONTROLER_PRESSED;
-		break;
-	case CONTROLER_PRESSED:
-		sendCode(nemo_down_holding);
-		break;
+	if (state == 'l' && targetState == 'l') {
+		DEBUG_PRINT("left_holding");
+		sendCode(nemo_left_holding);
+		return 'l';
 	}
 
-}
+	if (state == 'i' && targetState == 'r') {
+		DEBUG_PRINT("right_pressed");
+		sendCode(nemo_right_pressed);
+		return 'r';
+	}
+	if (state == 'r' && targetState == 'r') {
+		DEBUG_PRINT("right_holding");
+		sendCode(nemo_right_holding);
+		return 'r';
+	}
 
-void NemoControler::sendReleased() {
-	pressState = CONTROLER_RELEASED;
-	sendCode(nemo_released);
-	sendCode(nemo_idle);
+	// eg. u -> d has to be u->i then i->d
+	if(state !='i' && targetState != 'i' && targetState!=state){
+		DEBUG_PRINT("indirect pass _ passing through idle");
+		sendCode(nemo_released);
+		sendCode(nemo_idle);
+		return 'i';
+	}
+	if(state !='i' && targetState =='i'){
+		DEBUG_PRINT("idling");
+		sendCode(nemo_released);
+		sendCode(nemo_idle);
+		return 'i';
+	}
+
+	DEBUG_PRINT("ERROR_CASE NOT MET");
+	DEBUG_PRINT(state);
+	DEBUG_PRINT("TARGET");
+	DEBUG_PRINT(state);
+	//just in case
+	return 'i';
 }
 
 void NemoControler::sendCurrent() {
-	switch (state) {
-
-	case 'u':
-		sendUp();
-		break;
-	case 'd':
-		sendDown();
-		break;
-	case 'i':
-		sendReleased();
-		break;
-	default:
-		break;
-	}
-
+	state = onStateTransition();
 }
 
 void NemoControler::idle() {
-	state = 'i';
+	targetState = 'i';
 }
 
 void NemoControler::up() {
-	if (pressState == CONTROLER_PRESSED) {
-		sendReleased();
-	}
-	state = 'u';
+	targetState = 'u';
 }
 
 void NemoControler::down() {
-	if (pressState == CONTROLER_PRESSED) {
-		sendReleased();
-	}
-	state = 'd';
+	targetState = 'd';
 }
 
-
 void NemoControler::left() {
-	if (pressState == CONTROLER_PRESSED) {
-		sendReleased();
-	}
-	state = 'l';
+	targetState = 'l';
 }
 
 void NemoControler::right() {
-	if (pressState == CONTROLER_PRESSED) {
-		sendReleased();
-	}
-	state = 'r';
+	targetState = 'r';
 }

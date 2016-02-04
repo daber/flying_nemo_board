@@ -5,8 +5,9 @@
  *      Author: daber
  */
 
+#include "BLEController.h"
+
 #include "services.h"
-#include "BLEControlerWrapper.h"
 #include "boards/nemoboard_nfr8001_pins.h"
 
 #include <SPI.h>
@@ -48,7 +49,7 @@ void __ble_assert(const char *file, uint16_t line) {
 		;
 }
 
-BLEControlerWrapper::BLEControlerWrapper(OnPressCallback aCallback, uint16_t bcastInterval_ms) {
+BLEController::BLEController(OnPressCallback aCallback, uint16_t bcastInterval_ms) {
 	//32 - 16384
 	//0.625 unit ms;
 	callback = aCallback;
@@ -61,10 +62,10 @@ BLEControlerWrapper::BLEControlerWrapper(OnPressCallback aCallback, uint16_t bca
 
 }
 
-BLEControlerWrapper::~BLEControlerWrapper() {
+BLEController::~BLEController() {
 }
 
-void BLEControlerWrapper::setup() {
+void BLEController::setup() {
 
 	//Wait until the serial port is available (useful only for the Leonardo)
 	//As the Leonardo board is not reseted every time you open the Serial Monitor
@@ -112,7 +113,7 @@ void BLEControlerWrapper::setup() {
 	lib_aci_init(&aci_state, false);
 }
 
-void BLEControlerWrapper::poolEvent() {
+void BLEController::poolEvent() {
 	static bool setup_required = false;
 	char c ;
 	// We enter the if statement only when there is a ACI event available to be processed

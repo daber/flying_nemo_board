@@ -11,24 +11,15 @@
 
 class NemoControler {
 
-	enum PRESS_STATE {
-		CONTROLER_RELEASED,
-		CONTROLER_PRESSED
-	};
 	unsigned int codeLenght;
 	unsigned int carrierFreq;
 	//works on ~3 PWM
 	IRsend irsend;
 	char state;
-	char pressState;
 	char targetState;
 protected:
 	void sendCode(unsigned int* table);
-	void sendUp();
-	void sendDown();
-	void sendRight();
-	void sendLeft();
-	void sendReleased();
+	char onStateTransition();
 public:
 	NemoControler();
 	virtual ~NemoControler();
