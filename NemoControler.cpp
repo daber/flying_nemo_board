@@ -10,7 +10,7 @@
 
 NemoControler::NemoControler() :
 		codeLenght(27), carrierFreq(38), state('i'), pressState(
-				CONTROLER_RELEASED) {
+				CONTROLER_RELEASED),targetState(0) {
 
 }
 
@@ -24,6 +24,33 @@ void NemoControler::sendCode(unsigned int* table) {
 		delay(50);
 	}
 }
+
+void NemoControler::sendLeft() {
+	switch (pressState) {
+	case CONTROLER_RELEASED:
+		sendCode(nemo_up_pressed);
+		pressState = CONTROLER_PRESSED;
+		break;
+	case CONTROLER_PRESSED:
+		sendCode(nemo_up_holding);
+		break;
+	}
+
+}
+
+void NemoControler::sendRight() {
+	switch (pressState) {
+	case CONTROLER_RELEASED:
+		sendCode(nemo_down_pressed);
+		pressState = CONTROLER_PRESSED;
+		break;
+	case CONTROLER_PRESSED:
+		sendCode(nemo_down_holding);
+		break;
+	}
+
+}
+
 
 void NemoControler::sendUp() {
 	switch (pressState) {
@@ -91,4 +118,19 @@ void NemoControler::down() {
 		sendReleased();
 	}
 	state = 'd';
+}
+
+
+void NemoControler::left() {
+	if (pressState == CONTROLER_PRESSED) {
+		sendReleased();
+	}
+	state = 'l';
+}
+
+void NemoControler::right() {
+	if (pressState == CONTROLER_PRESSED) {
+		sendReleased();
+	}
+	state = 'r';
 }

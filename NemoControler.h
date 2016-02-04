@@ -21,10 +21,13 @@ class NemoControler {
 	IRsend irsend;
 	char state;
 	char pressState;
+	char targetState;
 protected:
 	void sendCode(unsigned int* table);
 	void sendUp();
 	void sendDown();
+	void sendRight();
+	void sendLeft();
 	void sendReleased();
 public:
 	NemoControler();
@@ -33,6 +36,9 @@ public:
 	void idle();
 	void up();
 	void down();
+	void right();
+	void left();
+
 };
 
 #endif /* NEMOCONTROLER_H_ */

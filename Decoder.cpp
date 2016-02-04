@@ -26,62 +26,62 @@ void Decoder::init() {
 
 bool Decoder::printKnown(const decode_results& results) {
 	switch (results.value) {
-	case LEFT_PRESSED: //left pressed
+	case NEMO_LEFT_PRESSED: //left pressed
 		Serial.println(F("left_pressed"));
 		printAsCTable("left_pressed", results);
 		return true;
 		break;
-	case LEFT_HOLDING: //left holding
+	case NEMO_LEFT_HOLDING: //left holding
 		Serial.println(F("left_holding"));
 		printAsCTable("left_holding", results);
 		return true;
 		break;
-	case RIGHT_PRESSED: //right pressed
+	case NEMO_RIGHT_PRESSED: //right pressed
 		Serial.println(F("right_pressed"));
 		printAsCTable("right_pressed", results);
 		return true;
 		break;
-	case RIGHT_HOLDING: //right holding
+	case NEMO_RIGHT_HOLDING: //right holding
 		Serial.println(F("right_holding"));
 		printAsCTable("right_holding", results);
 		return true;
 		break;
-	case RELEASED: // released
+	case NEMO_RELEASED: // released
 		Serial.println(F("released"));
 		printAsCTable("released", results);
 		return true;
 		break;
-	case IDLE: // idle
+	case NEMO_IDLE: // idle
 		Serial.println(F("idle"));
 		printAsCTable("idle", results);
 		return true;
 		break;
-	case UP_PRESSED: //up pressed
+	case NEMO_UP_PRESSED: //up pressed
 		Serial.println(F("up_pressed"));
 		printAsCTable("up_pressed", results);
 		return true;
 		break;
-	case UP_HOLDING: // up holding
+	case NEMO_UP_HOLDING: // up holding
 		Serial.println(F("up_holding"));
 		printAsCTable("up_holding", results);
 		return true;
 		break;
-	case DOWN_PRESSED: //down pressed pressed
+	case NEMO_DOWN_PRESSED: //down pressed pressed
 		Serial.println(F("down_pressed"));
 		printAsCTable("down_pressed", results);
 		return true;
 		break;
-	case DOWN_HOLDING: //down holding pressed
+	case NEMO_DOWN_HOLDING: //down holding pressed
 		Serial.println(F("down_holding"));
 		printAsCTable("down_holding", results);
 		return true;
 		break;
-	case FORWARD_PRESSED: //forward pressed
+	case NEMO_FORWARD_PRESSED: //forward pressed
 		Serial.println(F("forward_pressed"));
 		printAsCTable("forward_pressed", results);
 		return true;
 		break;
-	case FORWARD_HOLDING: //forward holding
+	case NEMO_FORWARD_HOLDING: //forward holding
 		Serial.println(F("forward_holding"));
 		printAsCTable("forward_holding", results);
 		return true;
