@@ -8,7 +8,12 @@
 #include "nemo_codes.h"
 #include <IRremote.h>
 
+#ifdef __CONTROLER_DEBUG__
 #define DEBUG_PRINT(s) Serial.println(s)
+#else
+#define DEBUG_PRINT(s)
+#endif
+
 NemoControler::NemoControler() :
 		codeLenght(27), carrierFreq(38), state('i'), targetState('i') {
 
