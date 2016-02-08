@@ -55,7 +55,8 @@ void sleep_until_interrupted() {
 
 void setup() {
 	Serial.begin(9600);
-	bleWrapper.setup();
+	decoder.init();
+	//bleWrapper.setup();
 
 	Serial.println("startup compleded!");
 
@@ -63,7 +64,8 @@ void setup() {
 
 
 void loop() {
-	bleWrapper.poolEvent();
-	controler.sendCurrent();
+	decoder.interceptAndDecode();
+	//bleWrapper.poolEvent();
+	//controler.sendCurrent();
 }
 

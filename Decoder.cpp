@@ -101,7 +101,7 @@ void Decoder::printRecievedCode(const decode_results& results) {
 }
 
 void Decoder::printValue(const decode_results& results) {
-	Serial.print("Value :0x");
+	Serial.print(" Value :0x");
 	Serial.println(results.value,DEC);
 }
 
