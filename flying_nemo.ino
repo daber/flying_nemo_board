@@ -5,36 +5,45 @@
 #include "Decoder.h"
 #include "NemoControler.h"
 
+#ifdef __MAIN_DEBUG__
+#define DEBUG_PRINT(s) DEBUG_PRINT("Controller down");
+#else
+#define DEBUG_PRINT(s)
+#endif
+
+
 Decoder decoder(4);
 decode_results result;
 NemoControler controler;
+
+
 
 void callback(char code){
 
 
 	switch(code){
 	case 'u':
-		Serial.println("Controller up");
+		DEBUG_PRINT("Controller up");
 		controler.up();
 		break;
 	case 'd':
-		Serial.println("Controller down");
+		DEBUG_PRINT("Controller down");
 		controler.down();
 		break;
 	case 'l':
-		Serial.println("Controller up");
+		DEBUG_PRINT("Controller up");
 		controler.left();
 			break;
 	case 'r':
-		Serial.println("Controller down");
+		DEBUG_PRINT("Controller down");
 		controler.right();
 		break;
 	case 'i':
-		Serial.println("Controller idle");
+		DEBUG_PRINT("Controller idle");
 		controler.idle();
 		break;
 	default:
-		Serial.println("Unknown command Controller idle");
+		DEBUG_PRINT("Unknown command Controller idle");
 		controler.idle();
 	}
 
@@ -56,9 +65,7 @@ void sleep_until_interrupted() {
 void setup() {
 	Serial.begin(9600);
 	bleWrapper.setup();
-
-	Serial.println("startup compleded!");
-
+	DEBUG_PRINT("startup completed!");
 }
 
 
