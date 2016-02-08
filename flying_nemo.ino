@@ -4,12 +4,7 @@
 #include "BLEController.h"
 #include "Decoder.h"
 #include "NemoControler.h"
-
-#ifdef __MAIN_DEBUG__
-#define DEBUG_PRINT(s) DEBUG_PRINT("Controller down");
-#else
-#define DEBUG_PRINT(s)
-#endif
+#include "debug.h"
 
 
 Decoder decoder(4);

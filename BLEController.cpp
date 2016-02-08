@@ -22,7 +22,8 @@ SERVICES_PIPE_TYPE_MAPPING_CONTENT;
 #define NUMBER_OF_PIPES 0
 static services_pipe_type_mapping_t * services_pipe_type_mapping = NULL;
 #endif
-static const hal_aci_data_t setup_msgs[NB_SETUP_MESSAGES] PROGMEM = SETUP_MESSAGES_CONTENT;
+static const hal_aci_data_t setup_msgs[NB_SETUP_MESSAGES] PROGMEM =
+		SETUP_MESSAGES_CONTENT;
 
 // aci_struct that will contain
 // total initial credits
@@ -49,7 +50,8 @@ void __ble_assert(const char *file, uint16_t line) {
 		;
 }
 
-BLEController::BLEController(OnPressCallback aCallback, uint16_t bcastInterval_ms) {
+BLEController::BLEController(OnPressCallback aCallback,
+		uint16_t bcastInterval_ms) {
 	//32 - 16384
 	//0.625 unit ms;
 	callback = aCallback;
@@ -72,14 +74,15 @@ void BLEController::setup() {
 #if defined (__AVR_ATmega32U4__)
 	while(!Serial)
 	{}
-	delay(5000);  //5 seconds delay for enabling to see the start up comments on the serial board
+	delay(5000); //5 seconds delay for enabling to see the start up comments on the serial board
 #elif defined(__PIC32MX__)
 	delay(1000);
 #endif
 	Serial.println(F("ble setup"));
 
 	if (NULL != services_pipe_type_mapping) {
-		aci_state.aci_setup_info.services_pipe_type_mapping = &services_pipe_type_mapping[0];
+		aci_state.aci_setup_info.services_pipe_type_mapping =
+				&services_pipe_type_mapping[0];
 	} else {
 		aci_state.aci_setup_info.services_pipe_type_mapping = NULL;
 	}
@@ -106,7 +109,8 @@ void BLEController::setup() {
 	aci_state.aci_pins.optional_chip_sel_pin = UNUSED;
 
 	aci_state.aci_pins.interface_is_interrupt = NFR8001_USE_INTERRUPT;
-	aci_state.aci_pins.interrupt_number = digitalPinToInterrupt(NFR8001_RDY_PIN);
+	aci_state.aci_pins.interrupt_number = digitalPinToInterrupt(
+			NFR8001_RDY_PIN);
 
 	//We reset the nRF8001 here by toggling the RESET line connected to the nRF8001
 	//and initialize the data structures required to setup the nRF8001
@@ -115,7 +119,7 @@ void BLEController::setup() {
 
 void BLEController::poolEvent() {
 	static bool setup_required = false;
-	char c ;
+	char c;
 	// We enter the if statement only when there is a ACI event available to be processed
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 
@@ -126,7 +130,8 @@ void BLEController::poolEvent() {
 		 As soon as you reset the nRF8001 you will get an ACI Device Started Event
 		 */
 		case ACI_EVT_DEVICE_STARTED: {
-			aci_state.data_credit_available = aci_evt->params.device_started.credit_available;
+			aci_state.data_credit_available =
+					aci_evt->params.device_started.credit_available;
 			switch (aci_evt->params.device_started.device_mode) {
 			case ACI_DEVICE_SETUP:
 				/**
@@ -140,7 +145,8 @@ void BLEController::poolEvent() {
 				Serial.println(F("Evt Device Started: Standby"));
 				//See ACI Broadcast in the data sheet of the nRF8001
 
-				lib_aci_connect(0/*in seconds*/, broadcastInterval/*in 0.625 ms*/);
+				lib_aci_connect(0/*in seconds*/,
+						broadcastInterval/*in 0.625 ms*/);
 				//While broadcasting (non_connectable) interval of 100ms is the minimum possible
 				//To stop the broadcasting before the timeout use the
 				//lib_aci_radio_reset to soft reset the radio
@@ -158,7 +164,9 @@ void BLEController::poolEvent() {
 				//all other ACI commands will have status code of ACI_STATUS_SCUCCESS for a successful command
 				Serial.print(F("ACI Command "));
 				Serial.println(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
-				Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
+				Serial.println(
+						F(
+								"Evt Cmd respone: Error. Arduino is in an while(1); loop"));
 				while (1)
 					;
 			}
@@ -173,12 +181,13 @@ void BLEController::poolEvent() {
 			break;
 
 		case ACI_EVT_DISCONNECTED:
-			if (ACI_STATUS_ERROR_ADVT_TIMEOUT == aci_evt->params.disconnected.aci_status) {
+			if (ACI_STATUS_ERROR_ADVT_TIMEOUT
+					== aci_evt->params.disconnected.aci_status) {
 				Serial.println(F("Broadcasting timed out"));
 			} else {
 				Serial.println(F("Evt Disconnected. Link Loss"));
 			}
-			if(callback){
+			if (callback) {
 				callback('i');
 			}
 			lib_aci_connect(0/*in seconds*/, broadcastInterval/*in 0.625 ms*/);
@@ -186,15 +195,16 @@ void BLEController::poolEvent() {
 
 		case ACI_EVT_DATA_RECEIVED:
 			Serial.print(F("Data received on Pipe #: 0x"));
-			Serial.println(aci_evt->params.data_received.rx_data.pipe_number, HEX);
+			Serial.println(aci_evt->params.data_received.rx_data.pipe_number,
+					HEX);
 			Serial.print(F("Length of data received: 0x"));
 			Serial.println(aci_evt->len - 2, HEX); // -2 calculated from structure size;
 
 			//BUTTON button = (BUTTON) aci_evt->params.data_received.rx_data.aci_data[0];
 			Serial.print(F("DataRecieved:"));
-			c = (char)(aci_evt->params.data_received.rx_data.aci_data[0]);
+			c = (char) (aci_evt->params.data_received.rx_data.aci_data[0]);
 			Serial.println(c);
-			if(callback){
+			if (callback) {
 				callback(c);
 			}
 
@@ -203,7 +213,8 @@ void BLEController::poolEvent() {
 		case ACI_EVT_HW_ERROR:
 			Serial.println(F("HW error: "));
 			Serial.println(aci_evt->params.hw_error.line_num, DEC);
-			for (uint8_t counter = 0; counter <= (aci_evt->len - 3); counter++) {
+			for (uint8_t counter = 0; counter <= (aci_evt->len - 3);
+					counter++) {
 				Serial.write(aci_evt->params.hw_error.file_name[counter]); //uint8_t file_name[20];
 			}
 			Serial.println();
