@@ -119,6 +119,7 @@ void BLEController::setup() {
 
 void BLEController::poolEvent() {
 	static bool setup_required = false;
+	static bool update_timings = true;
 	char c;
 	// We enter the if statement only when there is a ACI event available to be processed
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
@@ -147,6 +148,10 @@ void BLEController::poolEvent() {
 
 				lib_aci_connect(0/*in seconds*/,
 						broadcastInterval/*in 0.625 ms*/);
+
+
+
+
 				//While broadcasting (non_connectable) interval of 100ms is the minimum possible
 				//To stop the broadcasting before the timeout use the
 				//lib_aci_radio_reset to soft reset the radio
@@ -178,6 +183,11 @@ void BLEController::poolEvent() {
 
 		case ACI_EVT_PIPE_STATUS:
 			Serial.println(F("Evt Pipe Status"));
+
+			if(update_timings){
+				lib_aci_change_timing_GAP_PPCP();
+				update_timings = false;
+			}
 			break;
 
 		case ACI_EVT_DISCONNECTED:
@@ -194,15 +204,13 @@ void BLEController::poolEvent() {
 			break;
 
 		case ACI_EVT_DATA_RECEIVED:
-			Serial.print(F("Data received on Pipe #: 0x"));
-			Serial.println(aci_evt->params.data_received.rx_data.pipe_number,
-					HEX);
-			Serial.print(F("Length of data received: 0x"));
-			Serial.println(aci_evt->len - 2, HEX); // -2 calculated from structure size;
-
-			//BUTTON button = (BUTTON) aci_evt->params.data_received.rx_data.aci_data[0];
-			Serial.print(F("DataRecieved:"));
 			c = (char) (aci_evt->params.data_received.rx_data.aci_data[0]);
+
+			lib_aci_set_local_data(&aci_state,PIPE_NORDIC_UART_OVER_BTLE_UART_TX_SET,(uint8_t*)&c,1);
+
+			if(lib_aci_is_pipe_available(&aci_state,PIPE_NORDIC_UART_OVER_BTLE_UART_TX_TX)){
+				lib_aci_send_data(PIPE_NORDIC_UART_OVER_BTLE_UART_TX_TX,(uint8_t*)&c,1);
+			}
 			Serial.println(c);
 			if (callback) {
 				callback(c);
@@ -237,4 +245,5 @@ void BLEController::poolEvent() {
 		}
 	}
 }
+
 
