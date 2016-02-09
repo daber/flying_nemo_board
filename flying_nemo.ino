@@ -26,11 +26,11 @@ void callback(char code){
 		controler.down();
 		break;
 	case 'l':
-		DEBUG_PRINT("Controller up");
+		DEBUG_PRINT("Controller left");
 		controler.left();
 			break;
 	case 'r':
-		DEBUG_PRINT("Controller down");
+		DEBUG_PRINT("Controller right");
 		controler.right();
 		break;
 	case 'i':
