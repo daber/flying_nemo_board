@@ -101,7 +101,7 @@ void BLEController::setup() {
 	aci_state.aci_pins.miso_pin = MISO;
 	aci_state.aci_pins.sck_pin = SCK;
 
-	aci_state.aci_pins.spi_clock_divider = SPI_CLOCK_DIV8; //SPI_CLOCK_DIV8  = 2MHz SPI speed
+	aci_state.aci_pins.spi_clock_divider = SPI_CLOCK_DIV16; //SPI_CLOCK_DIV8  = 2MHz SPI speed
 	//SPI_CLOCK_DIV16 = 1MHz SPI speed
 
 	aci_state.aci_pins.reset_pin = NFR8001_RST_PIN;
