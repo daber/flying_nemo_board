@@ -33,6 +33,10 @@ void callback(char code){
 		DEBUG_PRINT("Controller right");
 		controler.right();
 		break;
+	case 'f':
+		DEBUG_PRINT("Controller fly forward");
+		controler.forward();
+		break;
 	case 'i':
 		DEBUG_PRINT("Controller idle");
 		controler.idle();

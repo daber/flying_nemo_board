@@ -29,6 +29,7 @@ public:
 	void down();
 	void right();
 	void left();
+	void forward();
 
 };
 
