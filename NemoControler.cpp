@@ -81,9 +81,9 @@ char NemoControler::onStateTransition() {
 		return 'f';
 	}
 	if (state == 'f' && targetState == 'f') {
-			DEBUG_PRINT("forward_holding");
-			sendCode(nemo_forward_pressed);
-			return 'f';
+		DEBUG_PRINT("forward_holding");
+		sendCode(nemo_forward_holding);
+		return 'f';
 	}
 
 	// eg. u -> d has to be u->i then i->d
