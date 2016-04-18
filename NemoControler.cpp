@@ -7,8 +7,9 @@
 #include "NemoControler.h"
 #include "nemo_codes.h"
 #include <IRremote.h>
+#include "debug.h"
 
-#define DEBUG_PRINT(s) Serial.println(s)
+
 NemoControler::NemoControler() :
 		codeLenght(27), carrierFreq(38), state('i'), targetState('i') {
 
@@ -74,6 +75,16 @@ char NemoControler::onStateTransition() {
 		sendCode(nemo_right_holding);
 		return 'r';
 	}
+	if (state == 'i' && targetState == 'f') {
+		DEBUG_PRINT("forward_pressed");
+		sendCode(nemo_forward_pressed);
+		return 'f';
+	}
+	if (state == 'f' && targetState == 'f') {
+		DEBUG_PRINT("forward_holding");
+		sendCode(nemo_forward_holding);
+		return 'f';
+	}
 
 	// eg. u -> d has to be u->i then i->d
 	if(state !='i' && targetState != 'i' && targetState!=state){
@@ -120,3 +131,8 @@ void NemoControler::left() {
 void NemoControler::right() {
 	targetState = 'r';
 }
+
+void NemoControler::forward() {
+	targetState = 'f';
+}
+
